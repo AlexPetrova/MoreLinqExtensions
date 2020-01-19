@@ -1,3 +1,3 @@
 # LinqExtensions
 
-C# implementation of JS array function.
+C# implementation of JS array functions, using lazy enumeration.
