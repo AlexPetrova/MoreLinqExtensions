@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace LinqMoreExtensions
+﻿namespace LinqMoreExtensions
 {
     class Program
     {
