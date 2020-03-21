@@ -11,10 +11,7 @@ namespace LinqMoreExtensions
             if (src == null)
                 throw new ArgumentNullException();
 
-            foreach (var item in src)
-            {
-                yield return mapper(item);
-            }
+            return ApplyMap(src, mapper);
         }
 
         public static IEnumerable<T> Filter<T>(this IEnumerable<T> src, Predicate<T> filter)
@@ -22,11 +19,7 @@ namespace LinqMoreExtensions
             if (src == null)
                 throw new ArgumentNullException();
 
-            foreach (var item in src)
-            {
-                if (filter(item))
-                    yield return item;
-            }
+            return ApplyFilter(src, filter);
         }
 
         public static R Reduce<T, R>(this IEnumerable<T> src, Func<T, R, R> reducer, R initialValue)
@@ -66,7 +59,10 @@ namespace LinqMoreExtensions
                 builder.Append(separator);
             }
 
-            builder.Length -= separator.Length;
+            if (builder.Length > 0)
+            {
+                builder.Length -= separator.Length;
+            }
 
             return builder.ToString();
         }
@@ -90,16 +86,7 @@ namespace LinqMoreExtensions
             if (src == null)
                 throw new ArgumentNullException();
 
-            var uniqueItems = new HashSet<T>();
-
-            foreach (var item in src)
-            {
-                if (!uniqueItems.Contains(item))
-                {
-                    uniqueItems.Add(item);
-                    yield return item;
-                }
-            }
+            return FindUnique(src);
         }
 
         public static IEnumerable<T> Limit<T>(this IEnumerable<T> src, int limit)
@@ -107,16 +94,9 @@ namespace LinqMoreExtensions
             if (src == null)
                 throw new ArgumentNullException();
 
-            using (var enumerator = src.GetEnumerator())
-            {
-                while (limit != 0 && enumerator.MoveNext())
-                {
-                    yield return enumerator.Current;
-                    limit--;
-                }
-            }
+            return ApplyLimit(src, limit);
         }
-
+        
         public static bool AtLeastOne<T>(this IEnumerable<T> src, Predicate<T> predicate)
         {
             if (src == null)
@@ -144,6 +124,49 @@ namespace LinqMoreExtensions
             }
 
             return matches;
+        }
+
+        private static IEnumerable<R> ApplyMap<T, R>(IEnumerable<T> src, Func<T, R> mapper)
+        {
+            foreach (var item in src)
+            {
+                yield return mapper(item);
+            }
+        }
+
+        private static IEnumerable<T> ApplyFilter<T>(IEnumerable<T> src, Predicate<T> filter)
+        {
+            foreach (var item in src)
+            {
+                if (filter(item))
+                    yield return item;
+            }
+        }
+
+        private static IEnumerable<T> ApplyLimit<T>(IEnumerable<T> src, int limit)
+        {
+            using (var enumerator = src.GetEnumerator())
+            {
+                while (limit != 0 && enumerator.MoveNext())
+                {
+                    yield return enumerator.Current;
+                    limit--;
+                }
+            }
+        }
+
+        private static IEnumerable<T> FindUnique<T>(IEnumerable<T> src)
+        {
+            var uniqueItems = new HashSet<T>();
+
+            foreach (var item in src)
+            {
+                if (!uniqueItems.Contains(item))
+                {
+                    uniqueItems.Add(item);
+                    yield return item;
+                }
+            }
         }
     }
 }
