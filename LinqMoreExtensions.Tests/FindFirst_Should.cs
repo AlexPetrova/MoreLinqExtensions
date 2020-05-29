@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using System;
 
-namespace NUnitTestProject.Tests
+namespace LinqMoreExtensions.Tests
 {
     public class FindFirst_Should
     {

@@ -3,7 +3,7 @@ using NUnit.Framework;
 using System;
 using System.Linq;
 
-namespace NUnitTestProject.Tests
+namespace LinqMoreExtensions.Tests
 {
     public class Limit_Should
     {
